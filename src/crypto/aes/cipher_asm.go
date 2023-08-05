@@ -11,6 +11,7 @@ import (
 	"crypto/internal/alias"
 	"crypto/internal/boring"
 	"internal/cpu"
+	"internal/cpuoverlay"
 	"internal/goarch"
 )
 
@@ -37,8 +38,8 @@ type aesCipherGCM struct {
 	aesCipherAsm
 }
 
-var supportsAES = cpu.X86.HasAES || cpu.ARM64.HasAES || goarch.IsPpc64 == 1 || goarch.IsPpc64le == 1
-var supportsGFMUL = cpu.X86.HasPCLMULQDQ || cpu.ARM64.HasPMULL
+var supportsAES = cpu.X86.HasAES || cpuoverlay.Arm64HasAES() || goarch.IsPpc64 == 1 || goarch.IsPpc64le == 1
+var supportsGFMUL = cpu.X86.HasPCLMULQDQ || cpuoverlay.Arm64HasPMULL()
 
 func newCipher(key []byte) (cipher.Block, error) {
 	if !supportsAES {
